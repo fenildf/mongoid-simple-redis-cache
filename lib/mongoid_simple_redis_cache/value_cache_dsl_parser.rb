@@ -11,7 +11,7 @@ module MongoidSimpleRedisCache
 
       @rules = []
 
-      @proxy_caller_str = @caller.name.underscore
+      @proxy_caller_str = @caller.name.underscore.gsub("/", "_")
       @proxy_db_param_strs = @params.map{|s|s.to_s}
       @proxy_initialize_param_strs = [@proxy_caller_str, @proxy_db_param_strs].flatten
       @proxy_key_param_strs = [@proxy_initialize_param_strs, @name].flatten
