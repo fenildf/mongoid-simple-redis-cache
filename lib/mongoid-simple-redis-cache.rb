@@ -36,10 +36,4 @@ require 'mongoid_simple_redis_cache/vector_cache_dsl_parser'
 
 module MongoidSimpleRedisCache
   extend MongoidSimpleRedisCache::Config
-
-  def self.skip_redis(&block)
-    MongoidSimpleRedisCache.config.set_skip_redis true
-    block.call
-    MongoidSimpleRedisCache.config.set_skip_redis false
-  end
 end

@@ -1,28 +1,26 @@
 module MongoidSimpleRedisCache
   module Config
-    @@skip_redis = false
+    @@skip_redis_flag = false
+    def self.skip_redis(&block)
+      @@skip_redis_flag = true
+      block.call
+      @@skip_redis_flag = false
+    end
+
+    def self.get_skip_redis
+      @@skip_redis_flag
+    end
+
     def config(&block)
       instance_exec(&block)
     end
 
     def set_skip_redis(skip)
       if skip
-        @@skip_redis = true
+        @@skip_redis_flag = true
       else
-        @@skip_redis = false
+        @@skip_redis_flag = false
       end
-    end
-
-    def self.set_skip_redis(skip)
-      if skip
-        @@skip_redis = true
-      else
-        @@skip_redis = false
-      end
-    end
-
-    def self.get_skip_redis
-      @@skip_redis
     end
 
     def vector_cache(options, &block)
