@@ -86,7 +86,12 @@ MongoidSimpleRedisCache.config do
 
       after_save SimpleCache::Post do |post|
         post.categories.each do |category|
-          refresh_cache(category, post.user)
+          ids = category.posts_of_user_db(post.user).map{|x|x.id.to_s}
+
+          custom_refresh_cache(
+            category,
+            {class: SimpleCache::User, id:  post.user.id},
+            ids)
         end
       end
 
@@ -104,7 +109,12 @@ MongoidSimpleRedisCache.config do
 
       after_save SimpleCache::Post do |post|
         post.categories.each do |category|
-          refresh_cache(category, post.user)
+          count = category.posts_count_of_user_db(post.user)
+
+          custom_refresh_cache(
+            category,
+            {class: SimpleCache::User, id:  post.user.id},
+            count)
         end
       end
 
@@ -122,7 +132,8 @@ MongoidSimpleRedisCache.config do
 
       after_save SimpleCache::Post do |post|
         post.categories.each do |category|
-          refresh_cache(category, post.user)
+          ids = category.posts_db.map{|x|x.id.to_s}
+          custom_refresh_cache(category, ids)
         end
       end
 
@@ -140,7 +151,8 @@ MongoidSimpleRedisCache.config do
 
       after_save SimpleCache::Post do |post|
         post.categories.each do |category|
-          refresh_cache(category, post.user)
+          count = category.posts_count_db
+          custom_refresh_cache(category, count)
         end
       end
 

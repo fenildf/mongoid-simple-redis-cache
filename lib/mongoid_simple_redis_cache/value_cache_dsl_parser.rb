@@ -29,6 +29,12 @@ module MongoidSimpleRedisCache
       @proxy.new(*arr).refresh_cache
     end
 
+    def custom_refresh_cache(*args)
+      count = [@caller, @params].flatten.count
+      arr = args[0...count]
+      @proxy.new(*arr).custom_refresh_cache(args.last)
+    end
+
     def register
       @proxy.class_exec @rules do |hash|
         @@rules = hash

@@ -7,6 +7,8 @@ module MongoidSimpleRedisCache
       args.map do |arg|
         if arg.class == String || arg.class == Symbol
           arg.to_s
+        elsif arg.class == Hash && !arg[:class].blank? && !arg[:id].blank?
+          "#{arg[:class].name.underscore}_#{arg[:id]}"
         else
           "#{arg.class.name.underscore}_#{arg.id}"
         end
@@ -61,6 +63,11 @@ module MongoidSimpleRedisCache
 
     def refresh_cache
       xxxs_ids_rediscache_reload
+    end
+
+    def custom_refresh_cache(ids)
+      xxxs_ids_rediscache_save(ids)
+      return ids
     end
 
     # 根据传入的类以及当前proxy对象缓存的id数组
