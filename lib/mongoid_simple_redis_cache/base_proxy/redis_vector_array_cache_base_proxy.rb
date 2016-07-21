@@ -12,7 +12,7 @@ module MongoidSimpleRedisCache
         end
       end*"_"
     end
-    
+
     # 读缓存，缓存不存在则读数据库
     def xxxs_ids
       re = xxxs_ids_rediscache
@@ -59,8 +59,8 @@ module MongoidSimpleRedisCache
       xxxs_ids_rediscache_save(ids)
     end
 
-    def reset_cache(ids)
-      xxxs_ids_rediscache_save(ids)
+    def refresh_cache
+      xxxs_ids_rediscache_reload
     end
 
     # 根据传入的类以及当前proxy对象缓存的id数组
@@ -71,7 +71,7 @@ module MongoidSimpleRedisCache
         return []
       end
       ids.map{|id|
-        klass.find_by_id(id)
+        klass.where("_id" => id).first
       }.compact.uniq
     end
 
@@ -149,7 +149,7 @@ module MongoidSimpleRedisCache
       key_item = key_class.find(key_id)
       proxy = self.new(key_item)
       ids = proxy.xxxs_ids
-      
+
       ids.each do |value_id|
         value_item = value_calss.find_by_id(value_id)
         if value_item.blank?

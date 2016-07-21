@@ -2,7 +2,7 @@ module MongoidSimpleRedisCache
   class VectorCacheDslParser < BaseDslParser
     def initialize(name, params, caller, model)
       @proxy = Class.new(RedisVectorArrayCacheBaseProxy)
-      @proxy = SimpleRedisCache::const_set("VectorArrayCacheProxy#{@proxy.object_id}".gsub('-', '_'), @proxy)
+      @proxy = MongoidSimpleRedisCache::const_set("VectorArrayCacheProxy#{@proxy.object_id}".gsub('-', '_'), @proxy)
 
       @name   = name
       @params = params
@@ -31,6 +31,12 @@ module MongoidSimpleRedisCache
       @proxy.new(*arr).remove_from_cache(id)
     end
 
+    def refresh_cache(*args)
+      count = [@caller, @params].flatten.count
+      arr = args[0...count]
+      @proxy.new(*arr).refresh_cache
+    end
+
     def register
       @proxy.class_exec @rules do |hash|
         @@rules = hash
@@ -47,7 +53,7 @@ module MongoidSimpleRedisCache
         end
 
         def xxxs_ids_db
-          @#{@proxy_caller_str}.#{@name}_db(#{@proxy_db_param_strs.map{|str| "@#{str}" }*","}).map(&:id)
+          @#{@proxy_caller_str}.#{@name}_db(#{@proxy_db_param_strs.map{|str| "@#{str}" }*","}).map{|item|item.id.to_s}
         end
 
         def self.funcs

@@ -1,15 +1,16 @@
 module MongoidSimpleRedisCache
   class ValueCacheDslParser < BaseDslParser
-    def initialize(name, params, caller)
+    def initialize(name, params, caller, value_type)
       @proxy = Class.new(RedisValueCacheBaseProxy)
-      @proxy = SimpleRedisCache::const_set("ValueCacheProxy#{@proxy.object_id}".gsub('-', '_'), @proxy)
+      @proxy = MongoidSimpleRedisCache::const_set("ValueCacheProxy#{@proxy.object_id}".gsub('-', '_'), @proxy)
 
       @name   = name
       @params = params
       @caller = caller
+      @value_type = value_type
 
       @rules = []
-      
+
       @proxy_caller_str = @caller.name.underscore
       @proxy_db_param_strs = @params.map{|s|s.to_s}
       @proxy_initialize_param_strs = [@proxy_caller_str, @proxy_db_param_strs].flatten
@@ -51,7 +52,9 @@ module MongoidSimpleRedisCache
           {
             :class => #{@caller.name},
             :#{@name} => Proc.new {|#{@proxy_initialize_param_strs*","}|
-              #{@proxy.name}.new(#{@proxy_initialize_param_strs*","}).value
+              value = #{@proxy.name}.new(#{@proxy_initialize_param_strs*","}).value
+              value = value.to_i if #{@value_type} == Fixnum
+              value
             }
           }
         end

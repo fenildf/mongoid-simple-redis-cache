@@ -9,11 +9,11 @@ module MongoidSimpleRedisCache
       params = options[:params] || []
       caller = options[:caller]
       model = options[:model]
-      raise 'vector_cache 缺少 name 参数'   if name.blank? 
-      raise 'vector_cache 缺少 caller 参数' if caller.blank?
-      raise 'vector_cache 缺少 model 参数'  if model.blank?
+      raise 'vector_cache 缺少 name 参数'   if name.blank?
+      raise 'vector_cache 缺少 caller 参数，或者 caller 不是一个合法的参数' if !caller.respond_to?(:field)
+      raise 'vector_cache 缺少 model 参数'  if !model.respond_to?(:field)
 
-      vector_cache = SimpleRedisCache::VectorCacheDslParser.new(name, params, caller, model)
+      vector_cache = MongoidSimpleRedisCache::VectorCacheDslParser.new(name, params, caller, model)
       vector_cache.instance_exec(vector_cache, &block)
       vector_cache.register
     end
@@ -22,10 +22,11 @@ module MongoidSimpleRedisCache
       name = options[:name]
       params = options[:params] || []
       caller = options[:caller]
-      raise 'value_cache 缺少 name 参数'   if name.blank? 
-      raise 'value_cache 缺少 caller 参数' if caller.blank?
+      value_type = options[:value_type] || String
+      raise 'value_cache 缺少 name 参数'   if name.blank?
+      raise 'vector_cache 缺少 caller 参数，或者 caller 不是一个合法的参数' if !caller.respond_to?(:field)
 
-      value_cache = SimpleRedisCache::ValueCacheDslParser.new(name, params, caller)
+      value_cache = MongoidSimpleRedisCache::ValueCacheDslParser.new(name, params, caller, value_type)
       value_cache.instance_exec(value_cache, &block)
       value_cache.register
     end

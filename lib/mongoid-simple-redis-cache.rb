@@ -21,6 +21,7 @@ require 'mongoid_simple_redis_cache/engine'
 require 'mongoid_simple_redis_cache/rails_routes'
 require 'mongoid_simple_redis_cache/redis_cache'
 
+require 'redis'
 require 'mongoid_simple_redis_cache/management'
 require 'mongoid_simple_redis_cache/base_methods'
 require 'mongoid_simple_redis_cache/base_proxy/redis_value_cache'
@@ -34,7 +35,7 @@ require 'mongoid_simple_redis_cache/vector_cache_dsl_parser'
 
 
 module MongoidSimpleRedisCache
-  extend SimpleRedisCache::Config
+  extend MongoidSimpleRedisCache::Config
 end
 
 

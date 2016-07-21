@@ -2,9 +2,9 @@ module MongoidSimpleRedisCache
   class RedisCache
     def self.instance
       @@instance ||= Redis.new(
-        host: Rails.application.secrets[:redis]["host"],
-        port: Rails.application.secrets[:redis]["port"],
-        db:   Rails.application.secrets[:redis]["db"]
+        host: ENV["redis_host"],
+        port: ENV["redis_port"],
+        db:   ENV["redis_db"]
       )
     end
 
