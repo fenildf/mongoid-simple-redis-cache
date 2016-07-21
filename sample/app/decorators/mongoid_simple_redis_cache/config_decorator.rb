@@ -1,5 +1,7 @@
 MongoidSimpleRedisCache.config do
 
+  # set_skip_redis true
+
   # category.posts_of_user_db(user)
   vector_cache name: :posts_of_user,
                params: [:user],

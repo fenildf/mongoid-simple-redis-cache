@@ -53,7 +53,7 @@ module MongoidSimpleRedisCache
             :class => #{@caller.name},
             :#{@name} => Proc.new {|#{@proxy_initialize_param_strs*","}|
               value = #{@proxy.name}.new(#{@proxy_initialize_param_strs*","}).value
-              value = value.to_i if #{@value_type} == Fixnum
+              value = value.to_i if #{@value_type} == Fixnum && !value.nil?
               value
             }
           }

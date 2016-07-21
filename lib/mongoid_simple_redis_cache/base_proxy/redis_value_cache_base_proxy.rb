@@ -17,14 +17,16 @@ module MongoidSimpleRedisCache
     def value
       cache = RedisValueCache.new(@key)
       if !cache.exists
-        refresh_cache
+        return refresh_cache
       end
       cache.value
     end
 
     def refresh_cache
       raise('cache key 未定义') if @key.nil?
-      RedisValueCache.new(@key).set_value(value_db)
+      val = value_db
+      RedisValueCache.new(@key).set_value(val)
+      val
     end
 
     def delete_cache
