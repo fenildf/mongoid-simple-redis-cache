@@ -77,9 +77,8 @@ module MongoidSimpleRedisCache
       if ids.blank?
         return []
       end
-      ids.map{|id|
-        klass.where("_id" => id).first
-      }.compact.uniq
+      
+      klass.where(:"_id".in => ids).to_a.compact.uniq
     end
 
     def vector_more(count,model,vector=nil)
